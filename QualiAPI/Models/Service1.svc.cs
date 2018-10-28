@@ -34,7 +34,7 @@ namespace AntenaServices
             {
                 if (antennasList == null)
                 {
-                    antennasList = InitAntennasListNew();
+                    antennasList = InitAntennasList();
                 }
 
                 return antennasList;
@@ -147,14 +147,14 @@ namespace AntenaServices
 
             List<Antenna> antennasList = new List<Antenna>();
             int x = 100, offset = 0;
-            while (x >= 100)
-            {
-                using (StreamReader r = new StreamReader("C:/Users/user1/Desktop/QualiAPI-master/QualiAPI-master/QualiAPI/Antennas.json"))
-                {
-                    string json = r.ReadToEnd();
-                    List<Antenna> items = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Antenna>>(json);
-                }
-                req = WebRequest.Create("https://data.gov.il/api/action/datastore_search?resource_id=7bfe75ce-3042-4571-98cc-ea3e5d44df86&offset=100");
+           // while (x >= 100)
+            //{
+                //using (StreamReader r = new StreamReader("C:/Users/user1/Desktop/QualiAPI-master/QualiAPI-master/QualiAPI/Antennas.json"))
+                //{
+                //    string json = r.ReadToEnd();
+                //    List<Antenna> items = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Antenna>>(json);
+                //}
+                req = WebRequest.Create("http://www.followme.somee.com/e2.json");
                 req.Method = "GET";
                 //System.Net.ServicePointManager.Expect100Continue = false;
                 req.ContentType = "application/json";
@@ -164,14 +164,14 @@ namespace AntenaServices
                 using (var reader = new System.IO.StreamReader(resp.GetResponseStream(), encoding))
                 {
 
-                    var responseText = reader.ReadToEnd();
-                    var response = JObject.Parse(responseText);
+                    string responseText = reader.ReadToEnd();
+                    var response = JArray.Parse(responseText);
 
-                    ((((JObject)(response.GetValue("result"))).GetValue("records")).ToList()).ForEach(a => antennasList.Add(a.ToObject<Antenna>()));
-                    x = (((JObject)(response.GetValue("result"))).GetValue("records")).Count();
-                    offset += 100;
+                   response.ToList().ForEach(a => antennasList.Add(a.ToObject<Antenna>()));
+                  //  x = (((JObject)(response.GetValue("result"))).GetValue("records")).Count();
+                    //offset += 100;
                 }
-            }
+        //    }
 
             return antennasList;
 
@@ -179,20 +179,24 @@ namespace AntenaServices
         }
         public static List<Antenna> InitAntennasListNew()
         {
-
-            List<Antenna> antennasList = new List<Antenna>();
-            int x = 100, offset = 0;
-            //while (x >= 100)
-            //{
-                using (StreamReader r = new StreamReader("D:/גמר/QualiAPI-master/QualiAPI/e.json"))
+            try
+            {
+                List<Antenna> antennasList = new List<Antenna>();
+                int x = 100, offset = 0;
+                //while (x >= 100)
+                //{
+                using (StreamReader r = new StreamReader(@"d:\DZHosts\LocalUser\followme\www.followme.somee.com\e2.json"))
                 {
                     string json = r.ReadToEnd();
                     antennasList = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Antenna>>(json);
                 }
-              
-               
+
+
                 //}
-            
+            } catch
+            {
+                throw new Exception("אין קובץ");
+            }
 
             return antennasList;
 
